@@ -71,3 +71,21 @@ jobs:
 
       - name: Push Docker image
         run: docker push ochani/flaskapp:latest
+  notify:
+    needs: test
+    if: ${{ false }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send email notification
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: CI Pipeline - Test Failure
+          body: Unit tests failed in the FlaskApp project.
+          to: ${{ secrets.EMAIL_USERNAME }}
+          from: GitHub Actions
